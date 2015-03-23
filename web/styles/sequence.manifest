@@ -1,0 +1,5 @@
+﻿//This is the sequence for merging all of the needed css files into one for performance
+//All the styles here are merged, in order, into styles.css
+global/baseStyles.css
+global/alerts.css
+global/prompts.css

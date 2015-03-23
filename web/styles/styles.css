@@ -1,0 +1,10 @@
+﻿/*If possible, load the font from google*/
+/*Load third party assets*/
+@import url("thirdparty/loading-bar.css");
+@import url("thirdparty/bootstrap.min.css");
+@import url("thirdparty/bootstrap.theme.min.css");
+@import url("thirdparty/fontawesome.min.css");
+/*Load our global stylesheets*/
+@import url("global/baseStyles.css");
+@import url("global/prompts.css");
+@import url("global/alerts.css");

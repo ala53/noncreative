@@ -1,0 +1,4 @@
+﻿//This is the sequencer for merging all of the javascript files into one
+//All the files listed here will be merged, in order, into javascript.js
+global/settings.js
+global/base.js

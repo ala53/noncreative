@@ -1,0 +1,8 @@
+﻿/*The caption font, color, etc. for an error message*/
+.errorCaption{
+    font-family: sans-serif;
+}
+/*The font, color, etc. for an error message's message*/
+.errorMessage{
+
+}

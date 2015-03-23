@@ -1,0 +1,146 @@
+﻿<!--Empty holder area-->
+<div class="col-md-2">
+    &nbsp;
+    <br />
+</div>
+
+<div class="col-md-4">
+    <!--Show the login page-->
+    <div id="loginSection" class="panel panel-primary" ng-hide="authentication.isAuth">
+        <div class="panel-heading">
+            <h3 class="panel-title">Log in to {{appDisplayName}}:</h3>
+        </div>
+
+        <div class="panel-body" id="loginInfoSection">
+            <!--Username box-->
+            <div class="input-group bottom-padded">
+                <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                <input type="text" id="loginUsername" ng-enter="login()" ng-model="loginData.userName" placeholder="Enter username" class="form-control" required />
+            </div>
+            <!--Password box-->
+            <div class="input-group bottom-padded">
+                <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                <input type="password" id="loginPassword" ng-enter="login()" ng-model="loginData.password" placeholder="Enter password" class="form-control" required />
+            </div>
+            <!--Submit box-->
+            <button type="submit" ng-click="login()" class="btn btn-primary btn-block" id="submitLogin">
+                <i class="fa fa-arrow-circle-right"></i> Log in
+            </button>
+        </div>
+    </div>
+    <!--External login section-->
+    <div id="externalLoginSection" class="panel panel-primary" ng-hide="authentication.isAuth">
+        <div class="panel-heading">
+            <h3 class="panel-title">Other options:</h3>
+        </div>
+
+        <div class="panel-body" id="loginInfoSection" style="opacity:0.2">
+            <h1>Coming soon!</h1>
+            <!--Submit box-->
+            <!--ng-click="login()"-->
+            <button type="submit" class="btn btn-primary btn-block" id="submitLogin">
+                <i class="fa fa-arrow-circle-right"></i> Log in with Google
+            </button>
+            <!--ng-click="login()"-->
+            <button type="submit" class="btn btn-primary btn-block" id="submitLogin">
+                <i class="fa fa-arrow-circle-right"></i> Log in with Facebook
+            </button>
+        </div>
+    </div>
+
+    <!--Login error display-->
+    <div class="alert alert-danger" role="alert" ng-show="loginMessage != ''">
+        {{loginMessage}}
+    </div>
+</div>
+<div class="col-md-4">
+    <!--Show the registration page-->
+    <div ng-show="registrationEnabled" class="panel panel-primary" ng-hide="authentication.isAuth">
+
+        <div class="panel-heading">
+            <h3 class="panel-title">Register for {{appDisplayName}}:</h3>
+        </div>
+        <div id="registrationInfoSection" class="panel-body">
+            <!--Username box-->
+            <div class="input-group bottom-padded">
+                <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                <input type="text" id="registerUsername" ng-enter="register()" ng-model="registration.userName" placeholder="Enter username" class="form-control" required />
+            </div>            <!--Display name-->
+            <div class="input-group bottom-padded">
+                <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                <input type="text" id="loginUsername" ng-enter="register()" ng-model="registration.displayName" placeholder="Enter display name" class="form-control" required />
+            </div>
+            <!--Password box-->
+            <div class="input-group bottom-padded">
+                <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                <input type="password" id="registerPassword" ng-enter="register()" ng-model="registration.password" placeholder="Enter password" class="form-control" required />
+            </div>
+            <!--Confirm password box-->
+            <div class="input-group bottom-padded">
+                <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                <input type="password" id="registerPasswordVerify" ng-enter="register()" ng-model="registration.confirmPassword" placeholder="Confirm password" class="form-control" required />
+            </div>
+            <!--Register box-->
+            <button type="submit" ng-click="register()" style="display:inline;" class="btn btn-primary btn-block" id="submitRegistration">
+                <i class="fa fa-arrow-circle-right"></i> Register
+            </button>
+        </div>
+
+
+    </div>
+
+    <div ng-class="(savedSuccessfully) ? 'alert alert-success' : 'alert alert-danger'" role="alert" ng-show="registrationMessage != ''">
+        {{registrationMessage}}
+    </div>
+</div>
+<!--Empty holder area for center alignment-->
+<div class="col-md-2">
+    &nbsp;
+</div>
+
+<div class="col-md-4 col-md-offset-4">
+    <div class="panel panel-primary" ng-show="authentication.isAuth">
+        <!--Result heading-->
+        <div class="panel-heading">
+            <h3 class="panel-title">You're already logged in as {{authentication.userName}}</h3>
+        </div>
+        <!--Result Details-->
+        <div class="panel-body">
+            <button type="submit" ng-click="logOut()" style="display:inline;" class="btn btn-primary btn-block">
+                <i class="fa fa-arrow-circle-right"></i> Log out?
+            </button>
+            <hr />
+            <div class="input-group bottom-padded">
+                <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                <input type="password" ng-enter="saveChangedPassword()" ng-model="currentPassword" placeholder="Current password" class="form-control" required />
+            </div>
+            <div class="input-group bottom-padded">
+                <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                <input type="password" ng-enter="saveChangedPassword()" ng-model="newPassword" placeholder="New password" class="form-control" required />
+            </div>
+            <div class="input-group bottom-padded">
+                <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                <input type="password" ng-enter="saveChangedPassword()" ng-model="confirmNewPassword" placeholder="Confirm new password" class="form-control" required />
+            </div>
+            <button type="submit" ng-click="saveChangedPassword()" style="display:inline;" class="btn btn-primary btn-block" id="savePWChangeBtn">
+                <i class="fa fa-arrow-circle-right"></i> Change password
+            </button>
+
+            <div ng-class="(changePasswordWorked) ? 'alert alert-success' : 'alert alert-danger'" role="alert" ng-show="chPassMessage != ''">
+                {{chPassMessage}}
+            </div>
+            <hr />
+            <div class="input-group bottom-padded">
+                <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                <input type="text" placeholder="Enter new display name" ng-model="displayName" class="form-control" />
+            </div>
+            <button type="submit" ng-click="saveDispName()" style="display:inline;" class="btn btn-primary btn-block" id="saveDispNameBtn">
+                <i class="fa fa-arrow-circle-right"></i> Save
+            </button>
+
+            <div ng-class="(changeNameWorked) ? 'alert alert-success' : 'alert alert-danger'" role="alert" ng-show="chNameMessage != ''">
+                {{chNameMessage}}
+            </div>
+        </div>
+    </div>
+</div>

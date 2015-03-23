@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<!--[if lte IE 8]> <meta http-equiv=refresh content="0; URL=ie_not_supported.html" /> <![endif]-->
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="app">
+<head>
+
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+    <!--DEV SETTING-->
+    <!--This disables caching so you can test CSS AND JS Changes without having to clear-->
+    <!--your cache each change. THIS SIGNIFICANTLY HURTS PERFORMANCE. DO NOT ENABLE WHEN IN PRODUCTION USE.-->
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+
+    <!--Uncomment this in a merged production environment
+        <link rel="stylesheet" type="text/css" href="styles/styles.css" />
+    -->
+    <!--While the styles aren't merged into the output, -->
+    <link rel="stylesheet" type="text/css" href="styles/global/alerts.css" />
+    <link rel="stylesheet" type="text/css" href="styles/global/baseStyles.css" />
+    <link rel="stylesheet" type="text/css" href="styles/global/prompts.css" />
+
+    <link rel="stylesheet" type="text/css" href="styles/thirdparty/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="styles/thirdparty/bootstrap.theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="styles/thirdparty/fontawesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="styles/thirdparty/loading-bar.css" />
+    <link rel="stylesheet" type="text/css" href="styles/thirdparty/toastr.css" />
+
+    <link rel="stylesheet" type="text/css" href="styles/thirdparty/medium.core.css" />
+    <link rel="stylesheet" type="text/css" href="styles/thirdparty/medium.theme.default.css" />
+
+    <!--End deletable section-->
+    <script src="scripts/javascript.js"></script>
+
+    <script src="scripts/global/settings.js"></script>
+
+    <script src="scripts/thirdparty/cookie.js"></script>
+    <script src="scripts/thirdparty/jquery.min.js"></script>
+    <script src="scripts/thirdparty/jquery.linkify.min.js"></script>
+    <script src="scripts/thirdparty/angularjs.min.js"></script>
+    <script src="scripts/thirdparty/angularjs.animate.min.js"></script>
+    <script src="scripts/thirdparty/angularjs.route.min.js"></script>
+    <script src="scripts/thirdparty/angularjs.localstorage.min.js"></script>
+    <script src="scripts/thirdparty/angular.infinitescroll.js"></script>
+    <script src="scripts/thirdparty/angular.sanitize.js"></script>
+    <script src="scripts/thirdparty/angular.virtualscroll.js"></script>
+
+    <script src="scripts/thirdparty/loading-bar.js"></script>
+    <script src="scripts/thirdparty/prefixfree.min.js"></script>
+    <script src="scripts/thirdparty/bootstrap.min.js"></script>
+    <script src="scripts/thirdparty/bootbox.min.js"></script>
+    <script src="scripts/thirdparty/toastr.js"></script>
+    <script src="scripts/global/base.js"></script>
+    <script src="scripts/thirdparty/prettydate.js"></script>
+    <script src="scripts/thirdparty/medium.js"></script>
+
+    <script src="scripts/controllers/home.js"></script>
+    <script src="scripts/controllers/login.js"></script>
+    <script src="scripts/controllers/creator.js"></script>
+    <script src="scripts/controllers/wall.js"></script>
+    <script src="scripts/controllers/navbar.js"></script>
+
+
+    <!--Wall libraries-->
+    <script src="scripts/controllers/wall-libs/editor.js"></script>
+    <script src="scripts/controllers/wall-libs/loader.js"></script>
+    <script src="scripts/controllers/wall-libs/wall.js"></script>
+    <script src="scripts/controllers/wall-libs/wallsettings.js"></script>
+    <script src="scripts/controllers/wall-libs/attachmenthelper.js"></script>
+    <script src="scripts/controllers/wall-libs/sidebar.js"></script>
+    <!--End wall libraries list-->
+
+    <script src="scripts/internal-libs/authservice.js"></script>
+    <script src="scripts/internal-libs/selectionhelpers.js"></script>
+    <script src="scripts/internal-libs/restApi.js"></script>
+    <script src="scripts/internal-libs/ngcontenteditable.js"></script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+
+</head>
+<body>
+
+    <!--Our navbar is here-->
+    <div class="navbar navbar-inverse navbar-default" role="navigation" ng-controller="navbarController">
+        <!--This navbar is hidden when the user isn't logged in-->
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" id="navbar-brand-link" rel="home" href="#/" title="Fragranx-Next App">&nbsp;&nbsp;&nbsp;NonCreative</a>
+        </div>
+
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#/creator"><i class="fa fa-share"></i> Create a wall</a></li>
+                <li ng-hide="authentication.isAuth"><a href="#/login"><i class="fa fa-sign-in"></i> Log in</a></li>
+                <li ng-show="authentication.isAuth"><a ng-click="logOut()" href="#/login"><i class="fa fa-sign-out"></i> Log out ({{authentication.userName}})</a></li>
+                <li ng-show="authentication.isAuth"><a href="#/login"><i class="fa fa-share"></i> My user settings</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!--This is where the content from angularJs will be injected-->
+    <div class="" ng-view>
+        <br />
+        <br />
+    </div>
+</body>
+</html>

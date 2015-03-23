@@ -1,0 +1,262 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <!--The notification area for when you're not signed in-->
+    <div class="container" ng-if="wall.login.notAuthenticated">
+        <div class="row">
+            <div class="col-lg-offset-4 col-lg-4">
+                <div ng-if="wall.login.hasRetrievedInfo && wall.login.isPrivate && wall.login.notAuthenticated">
+                    <div class="panel panel-primary card">
+                        <div class="panel-heading" style="width:100%">
+                            <h3 class="panel-title">Sorry :/</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>This board is private and you don't have access.</p>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="wall.login.needsPassword && !wall.login.isPrivate && wall.login.notAuthenticated">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" style="width:100%">
+                            <h3 class="panel-title">Enter your password</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>This board is private and you don't have access. Enter your password to continue.</p>
+
+                            <div class="input-group bottom-padded">
+                                <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                                <input type="password" ng-enter="checkPassword()" ng-model="passwordInfo.password" placeholder="Enter password" class="form-control" />
+                            </div>
+                            <button type="submit" ng-click="checkPassword()" style="display:inline;" class="btn btn-primary btn-block">
+                                <i class="fa fa-arrow-circle-right"></i> Enter
+                            </button>
+                            <div class="alert alert-danger" role="alert" ng-show="wall.login.error != ''">
+                                {{wall.login.error}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="!wall.login.hasRetrievedInfo">
+                    <div class="panel panel-primary card">
+                        <div class="panel-heading" style="width:100%">
+                            <h3 class="panel-title">Please wait...</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>Please wait, we're getting the info on the wall from the server.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--The actual wall content area-->
+    <div id="currentWallContentArea" ng-dblclick="edit.add()" ng-if="!wall.login.notAuthenticated"
+         ng-click="edit.forceSyncChanges(edit.selected); edit.selectOrEdit(-1); edit.toggleEditing(false)"
+         class="overflowable-container" ng-style="" infinite-scroll="loader.getNext()"
+         infinite-scroll-disabled="loader.busy || !loader.hasMore" infinite-scroll-distance="3"
+         style="background-color:lightgray;background-image: url({{wall.login.wallInfo.backgroundUrl}}); {{(wall.login.wallInfo.tileBackground) ? '' : 'background-size:100%;'}}">
+
+        <div class="wall-header">
+            <h1 class="wall-title">{{wall.login.wallInfo.title}}</h1>
+            <h3 class="wall-subtitle">{{wall.login.wallInfo.subtitle}}</h3>
+        </div>
+        <!--All the posts-->
+        <div class="container">
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <div class="row">
+                <div vs-repeat="179" vs-autoresize vs-scroll-parent="#currentWallContentArea" vs-excess="20">
+                    <!--Prevent propogation all the way to container level-->
+                    <div ng-click="$event.stopPropagation();" ng-dblclick="$event.stopPropagation();"
+                         class="col-lg-offset-2 card-container col-lg-8 {{edit.selected == post.postId ? 'card-container-active' : ''}}" ng-repeat="post in posts">
+                        <!--Let the card begin-->
+                        <div ng-class="'panel panel-primary card wall-post ' + (edit.selected == post.postId ? 'card-active' : '')"
+                             ng-click="edit.selectOrEdit(post.postId)">
+                            <!--Title segment-->
+                            <div class="panel-heading" style="width:100%">
+                                <!--Delete button-->
+                                <span ng-click="edit.delete(post.postId)"
+                                      ng-hide="!edit.canEdit(post.postId)"
+                                      style="float:right;" class="delete-button">
+                                    <i class="fa fa-minus-circle"></i>
+                                </span>
+                                <!--Header / title-->
+                                <h3 id="header-post-{{post.postId}}"
+                                    contenteditable="{{edit.canEdit(post.postId)}}"
+                                    placeholder="Title"
+                                    ng-click="edit.selectOrEdit(post.postId)"
+                                    ng-change="edit.change(post.postId)"
+                                    ng-model="post.header"
+                                    class="panel-title"
+                                    style="display:inline; width:90%;min-width:100px"></h3>
+                            </div>
+                            <!--Body segment / content segment-->
+                            <div class="panel-body">
+                                <!--Content layer-->
+                                <div ng-class="'card-content ' + (edit.selected == post.postId ? 'card-content-active' : '')">
+                                    <!--Content-->
+                                    <div id="content-post-{{post.postId}}"
+                                         contenteditable="{{edit.canEdit(post.postId)}}"
+                                         style="width:100%; min-width:100px;"
+                                         ng-model="post.content"
+                                         ng-click="edit.selectOrEdit(post.postId)"
+                                         ng-change="edit.change(post.postId)">
+                                    </div>
+                                    <!--Link for attachment if any-->
+                                    <p id="attachment-post-{{post.postId}}"
+                                       contenteditable="{{edit.canEdit(post.postId)}}"
+                                       ng-show="edit.isPostEditing(post.postId) || post.attachment != ''"
+                                       ng-model="post.attachment" class="wall-post-attachment"
+                                       ng-click="edit.selectOrEdit(post.postId)"
+                                       ng-change="edit.change(post.postId)"
+                                       placeholder="Attachment URL"></p>
+
+                                    <!--Information about author and date-->
+                                    <h6>{{prettyDate(post.updateTime)}} by {{post.author}}</h6>
+                                    <!--Embed sections-->
+                                    <!--Youtube-->
+                                    <div ng-if="attachHelp.isYoutube(post.attachment)">
+                                        {{getYoutubeVideoId(post.attachment)}}
+                                        <div class="yt-container">
+                                            <iframe class="yt-video"
+                                                    ng-src="{{'http://www.youtube.com/embed/' + attachHelp.getYoutubeVideoId(post.attachment)}}"
+                                                    frameborder="0" />
+                                        </div>
+                                        <br />
+                                        <br /> <!--So we don't have the bottom gradient-->
+                                    </div>
+                                    <!--Video-->
+                                    <div ng-if="attachHelp.isVideo(post.attachment)">
+                                        <video width="320" height="240" controls>
+                                            <source ng-src="{{post.attachment}}">
+                                        </video>
+                                    </div>
+                                    <!--Image-->
+                                    <div ng-if="attachHelp.isImage(post.attachment)">
+                                        <img ng-src="{{post.attachment}}" style="width:100%" />
+                                    </div>
+                                </div>
+                                <div class="card-content-cover"></div> <!--The nice blending at the end of long descriptions-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="bottomErrorAndLoadingArea">
+                <h1 style="text-align:center">
+                    <span ng-show="loader.errored">An error has occurred :/ - Try refreshing?</span>
+                    <span ng-show="!loader.hasMore">Looks like you've reached the end :|</span>
+                </h1>
+            </div>
+        </div>
+
+    </div>
+    <!--The sidebar and add button-->
+    <div ng-click="edit.add(); $event.stopPropogation();" class="sidebar-button add-button" ng-show="wall.login.canEdit()"><i class="fa fa-plus-circle"></i></div>
+    <div ng-click="sidebar.toggleCollapsed()" ng-if="wall.login.isModerator()" collapsed="{{sidebar.collapsed}}" class="sidebar-button sidebar-left-button"><i ng-class="'fa ' + (sidebar.collapsed ? 'fa-arrow-circle-right' : 'fa-arrow-circle-left')"></i></div>
+
+    <div class="sidebar-left" ng-if="wall.login.isModerator()" collapsed="{{sidebar.collapsed}}">
+        <div class="sidebar-left-content">
+            <button class="btn btn-primary" ng-click="settings.update()">Save changes</button>
+            <span ng-show="settings.hasError" class="alert alert-danger">{{settings.error}}</span>
+            <hr />
+            <h5>Authorized users</h5>
+            <div>
+                <div ng-repeat="user in wall.login.wallInfo.authorizedUsers">
+                    <h6 style="display:inline;">&nbsp;&nbsp;&nbsp;{{user.username}}</h6>
+                    <select style="display:inline;" ng-model="user.permissions" ng-change="settings.updateUser(user)">
+                        <option value="None">
+                            None
+                        </option>
+                        <option value="View">
+                            View
+                        </option>
+                        <option value="ViewEdit">
+                            View, Edit
+                        </option>
+                        <option value="ViewEditModerate">
+                            View, Edit, Mod
+                        </option>
+                    </select>
+                    <!--Delete button-->
+                    <span ng-click="settings.revokeUser(user)"
+                          style="float:right;" class="delete-button">
+                        <i class="fa fa-minus-circle"></i>
+                    </span>
+                    <hr />
+                </div>
+            </div>
+            <hr />
+            <h5>Add authorized user</h5>
+            <div class="input-group bottom-padded">
+                <span class="input-group-addon sidebar-button-pwchange" ng-click="settings.addAuthorized()"><i class="fa fa-user fa-fw"></i></span>
+                <input type="password" ng-enter="settings.addAuthorized()" ng-model="settings.addUser.name"
+                       placeholder="User's username" class="form-control" required />
+            </div>
+            <h6>Permission level</h6>
+            <select ng-model="settings.addUser.permissionLevel" selected="ViewEdit">
+                <option value="None">
+                    None (banned from viewing)
+                </option>
+                <option value="View">
+                    View
+                </option>
+                <option value="ViewEdit">
+                    View and edit
+                </option>
+                <option value="ViewEditModerate">
+                    View, edit, and moderate
+                </option>
+            </select>
+            <hr />
+            <h5>Title</h5>
+            <input type="text" ng-enter="settings.update()" ng-model="wall.login.wallInfo.title"
+                   placeholder="Title" class="form-control" />
+            <hr />
+            <h5>Subtitle</h5>
+            <input type="text" ng-enter="settings.update()" ng-model="wall.login.wallInfo.subtitle"
+                   placeholder="Subtitle" class="form-control" />
+            <hr />
+            <h5>Background</h5>
+            <input type="text" ng-enter="settings.update()" ng-model="wall.login.wallInfo.backgroundUrl"
+                   placeholder="Background URL" class="form-control" />
+            <input type="checkbox" ng-model="wall.login.wallInfo.tileBackground" />Tile background
+            <hr />
+            <h5>Non-authorized user permission level</h5>
+            <select ng-model="wall.login.wallInfo.unauthorizedUsersPermission">
+                <option value="None">
+                    None (private)
+                </option>
+                <option value="View">
+                    View
+                </option>
+                <option value="ViewEdit">
+                    View and edit
+                </option>
+                <option value="ViewEditModerate">
+                    View, edit, and moderate
+                </option>
+            </select>
+            <hr />
+            <h5>Change password</h5>
+            <div class="input-group bottom-padded">
+                <span class="input-group-addon sidebar-button-pwchange" ng-click="settings.changePassword()"><i class="fa fa-key fa-fw"></i></span>
+                <input type="password" ng-enter="settings.changePassword()" ng-model="settings.newPassword"
+                       placeholder="Enter new password" class="form-control" required />
+            </div>
+            <hr />
+        </div>
+    </div>
+
+    <a href="#/login">
+        <div class="sidebar-button" style="position:absolute;bottom:20px;right:30px;"><i class="fa fa-user"></i></div>
+    </a>
+</body>
+</html>
